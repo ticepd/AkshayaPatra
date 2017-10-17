@@ -1,8 +1,8 @@
-/*    JTAG Programmer
-        Version 4
+/*--------------JTAG Programmer--------------*/
+/*        Version 4
         Started: December-07-2011
-        Completed: December-08-2011
-        Written By  : Rohit Dureja 
+        Written By  : Rohit Dureja
+                    : Rahul Sharma 
         Remarks     :  1. Only implements
                            -  XCOMPLETE
                            -  XTDOMASK
@@ -12,23 +12,17 @@
                            -  XSDRTDO
                            -  XSTATE
                            -  XREPEAT(i) 
-                       2. Runs at 115200bps
-        Notes       :  (i) Implemented in Python application  
-        Status      : Development Closed. Now Testing            */
-      
+/*----------------CEDT, NSIT----------------*/              
 #include <avr/io.h>
 #include <util/delay.h>
 #define F_CPU 16000000UL
 
-//#define TCK  14 
-//#define TDI  12
-//#define TDO  13
-//#define TMS  11 
+#define TCK  8 
+#define TDI  6
+#define TDO  7
+#define TMS  5 
+#define CLK 9
 
-#define TCK  SCK //13
-#define TDI  MOSI //11
-#define TDO  MISO //12
-#define TMS  SS //10
 #define MAXSIZE 0x20
 
 /*--------------------------------------------------------------------*/
@@ -308,6 +302,7 @@ uint32_t size_bits()
 void xcomplete()        /*One byte instruction with no parameters*/
 {
   flag=1;
+  tone(CLK,65535);
   Serial.write('S');
   Serial.end();
 }
@@ -480,6 +475,7 @@ void target_reset()
 /*--------------------------------------------------------------------*/
 void setup()
 {
+  pinMode(CLK, OUTPUT);
   pinMode(TCK, OUTPUT);
   pinMode(TMS, OUTPUT);
   pinMode(TDI, OUTPUT);
@@ -492,7 +488,6 @@ void setup()
 }
 
 /*--------------------------------------------------------------------*/
-
 void loop()
 {
   while(Serial.available()<1);
@@ -507,5 +502,3 @@ void loop()
   else if(flag==0)
   Serial.write('S');
 }
-
-
